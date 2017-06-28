@@ -2,6 +2,13 @@ package uk.cam.ac.cf443.FastFibonacci;
 
 import java.math.BigInteger;
 
+/**
+ * A stateless function object. Containing 4 implementations of the Fibonacci function, which
+ * takes an integer n and returns the nth element of the Fibonacci sequence:
+ * 	0, 1, 1, 2, 3, 5, 8, ...
+ * 
+ * @author cf443
+ */
 public final class FastFibonacci {
 	
 	//Speed test of the 3 Fibonacci algorithms
@@ -19,6 +26,7 @@ public final class FastFibonacci {
 	 */
 	private static BigInteger doubling(int n) {
 		int m = 0;
+		return null;
 		
 	}
 	
