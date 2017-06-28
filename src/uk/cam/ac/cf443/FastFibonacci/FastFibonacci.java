@@ -9,18 +9,38 @@ public final class FastFibonacci {
 		
 	}
 	
-	//Standard recursive method
+	/*
+	 * Fast doubling method. Logically equivalent to the matrix method, with the redundant
+	 * calculations eliminated. Implemented non-recursively to prevent stack overflow on
+	 * exponentially large inputs.
+	 * 
+	 * F(2n)   = F(n) * (2*F(n+1) - F(n))
+	 * F(2n_1) = F(n+1)^2 + F(n)^2
+	 */
 	private static BigInteger doubling(int n) {
+		int m = 0;
 		
 	}
 	
-	//Matrix multiplication method
+	/*
+	 * Matrix multiplication method. Encodes the definition of the Fibonacci numbers using 
+	 * matrices. Much faster than the dynamic programming method, but is slower than the doubling
+	 * method by a constant factor due to redundant calculations in the matrix multiplications.
+	 * 
+	 * |1 1|^n   |F(n+1) F(n)  |
+	 * |1 0|   = |F(n)   F(n-1)|
+	 */
 	private static BigInteger matrix(int n) {
 		BigInteger[] matrix = {BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ZERO};
 		return matrixPower(matrix, n)[1];
 	}
 	
-	//Dynamic programming method
+
+	/*
+	 * Simple dynamic programming method. Builds up the result from the bottom up, starting with
+	 * the initial seed values F(0) = 0, F(1) = 1, and applying the successor function:
+	 * 	F(n) = F(n-1) + F(n-2)
+	 */
 	private static BigInteger dynamic(int n) {
 		BigInteger[] fibs = new BigInteger[3];
 		fibs[0] = BigInteger.ZERO;
@@ -35,7 +55,10 @@ public final class FastFibonacci {
 		return fibs[0];
 	}
 	
-	//Recursive method
+	/*
+	 * Simple application of the recursive definition of the Fibonacci numbers:
+	 *  F(n) = F(n-1) + F(n-2)
+	 */
 	private static BigInteger recursive(int n) {
 		if (n==0 || n==1) return BigInteger.valueOf(n);
 		return recursive(n-1).add(recursive(n-2));	
