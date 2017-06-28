@@ -21,7 +21,17 @@ public final class fastFibonacci {
 	
 	//Dynamic programming method
 	private static BigInteger dynamic(int n) {
+		BigInteger[] fibs = new BigInteger[3];
+		fibs[0] = BigInteger.ZERO;
+		fibs[1] = BigInteger.ONE;
 		
+		for (int i = 0; i < n; i++) {
+			fibs[2] = fibs[0].add(fibs[1]);
+			fibs[0] = fibs[1];
+			fibs[1] = fibs[2];
+		}
+		
+		return fibs[0];
 	}
 	
 	//Recursive method
