@@ -61,10 +61,10 @@ public final class fastFibonacci {
 		
 		//Exponentiation by repeated squaring
 		while (e != 0) {
-			if (e % 2 != 0) result = matrixMultiply(result, b);
+			if (e % 2 != 0) out = matrixMultiply(out, b);
 			
 			e /= 2;
-			matrix = matrixMultiply(b,b);
+			b = matrixMultiply(b,b);
 		}
 		return out;
 	}
