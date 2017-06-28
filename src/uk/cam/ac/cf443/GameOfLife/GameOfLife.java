@@ -6,7 +6,12 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameOfLife {
+/**
+ * The core class of the Game of Life implementation, contains a main() method for exectution.
+ * 
+ * @author cf443
+ */
+public final class GameOfLife {
 	private World mWorld;
 	private PatternStore mStore;
 	private ArrayList<World> mCachedWorlds = new ArrayList<>();
@@ -15,7 +20,7 @@ public class GameOfLife {
 
 	/**
 	 * Play the game of life from the current state using the console
-	 * @throws java.io.IOException
+	 * @throws java.io.IOException	Unexpected input from System.in.readLine()
 	 */
 	public void play() throws java.io.IOException {
 
