@@ -16,8 +16,8 @@ public final class FastFibonacci {
 	
 	//Matrix multiplication method
 	private static BigInteger matrix(int n) {
-		
-		
+		BigInteger[] matrix = {BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ZERO};
+		return matrixPower(matrix, n)[1];
 	}
 	
 	//Dynamic programming method
