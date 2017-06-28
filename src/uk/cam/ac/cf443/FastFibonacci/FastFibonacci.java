@@ -1,8 +1,8 @@
-package uk.cam.ac.cf443.fastFibonacci;
+package uk.cam.ac.cf443.FastFibonacci;
 
 import java.math.BigInteger;
 
-public final class fastFibonacci {
+public final class FastFibonacci {
 	
 	//Speed test of the 3 Fibonacci algorithms
 	public static void main(String... ignored) {
