@@ -17,6 +17,7 @@ public final class fastFibonacci {
 	//Matrix multiplication method
 	private static BigInteger matrix(int n) {
 		
+		
 	}
 	
 	//Dynamic programming method
@@ -38,5 +39,38 @@ public final class fastFibonacci {
 	private static BigInteger recursive(int n) {
 		if (n==0 || n==1) return BigInteger.valueOf(n);
 		return recursive(n-1).add(recursive(n-2));	
+	}
+	
+	
+	/* --- Helper methods --- */
+	
+	private static BigInteger[] matrixMultiply(BigInteger[] a, BigInteger[] b) {
+		return new BigInteger[] {
+				mult(a[0], b[0]).add(mult(a[1], b[2])),
+				mult(a[0], b[1]).add(mult(a[1], b[3])),
+				mult(a[2], b[0]).add(mult(a[3], b[2])),
+				mult(a[2], b[1]).add(mult(a[3], b[3]))
+		};
+	}
+	
+	private static BigInteger[] matrixPower(BigInteger[] b, int e) {
+		if (e < 0) throw new IllegalArgumentException("Negative exponents not supported");
+		
+		//Begin with the identity matrix
+		BigInteger[] out = {BigInteger.ONE, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ONE};
+		
+		//Exponentiation by repeated squaring
+		while (e != 0) {
+			if (e % 2 != 0) result = matrixMultiply(result, b);
+			
+			e /= 2;
+			matrix = matrixMultiply(b,b);
+		}
+		return out;
+	}
+	
+	//Will be replaced with Karatsuba multiplication eventually...
+	private static BigInteger mult(BigInteger a, BigInteger b) {
+		return a.multiply(b);
 	}
 }
