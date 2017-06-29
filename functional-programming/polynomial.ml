@@ -1,15 +1,13 @@
 (*This code concerns the representation of multivariable polynomials using ML. Once such
-  representation is to represent each term in the polynomial as a pair of a coefficient
-  and an ordered list of integers, representing the exponents of a series of variables:
+  representation is to represent each term in the polynomial as a pair of a coefficient and an 
+  ordered list of integers, representing the exponents of a series of variables:
 
     e.g. (3,[1,2,0,4]) represents 3*w*x^2*z^4
 
-  Given this 'term' concept, a polynomial is simply a list of terms 
-    *)
+  Given this 'term' concept, a polynomial is simply a pair of the intgeer number of variables in
+  the polynomial and a list of terms in lexicographic order. *)
 
 datatype term = Term of int * int list;
-
-(*Number of variables * List of terms in lexicographic order*)
 datatype poly = Poly of int * term list
               | Null;
 
@@ -62,6 +60,7 @@ in
 end;
 
 
+(* ----- TESTING ----- *)
 val a = Poly(1,[Term(3,[2]),Term(6,[1]),Term(2,[0])]);
 val b = a;
 val c = Poly(1,[Term(2,[2]),Term(9,[1]),Term(3,[0])]);
