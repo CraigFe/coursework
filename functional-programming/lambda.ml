@@ -43,7 +43,7 @@ fun pow  m n = n m;
 fun pre n f x = (fn (a,b) => a) (n (fn (a,b) => (b,f b)) (x,x));
 fun sub m n f x = n pre m f x;
 
-chur(*testing*)
+(*testing*)
 fun integer l = l (fn x => x+1) 0; (*Cast arbitrary function to integer*)
 fun one       f x = f x;
 fun two       f x = f (f x);
