@@ -1,3 +1,15 @@
+
+(*Church booleans are the Church encoding of the Boolean values true and false. In short, Boolean
+  logic may be considered as a choice, such as in flow control. The Church encoding of true and 
+  false are functions of two parameters: true chooses the first parameter, false chooses the 
+  second parameter.
+
+  This definition allows preficates to act directly as if-clauses:
+  	<predicate> bool <then-clause> <else-clause> *)
+
+fun True  x y = x;
+fun False x y = y;
+
 (*Church numerals are an abstraction of natural numbers using lambda notation. It is possible to
   simply implement the hyperoperations from n=0 to n=3 using curried functions in ML, as 
   illustrated in the following code.
@@ -23,7 +35,7 @@ fun pow  m n = n m;
 
 fun sub m n f x = n pre m f x;
 
-(*testing*)
+chur(*testing*)
 fun integer l = l (fn x => x+1) 0; (*Cast arbitrary function to integer*)
 fun one       f x = f x;
 fun two       f x = f (f x);
