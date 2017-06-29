@@ -4,7 +4,7 @@
 
     e.g. (3,[1,2,0,4]) represents 3*w*x^2*z^4
 
-  Given this 'term' concept, a polynomial is simply a pair of the intgeer number of variables in
+  Given this 'term' concept, a polynomial is simply a pair of the integer number of variables in
   the polynomial and a list of terms in lexicographic order. *)
 
 datatype term = Term of int * int list;
