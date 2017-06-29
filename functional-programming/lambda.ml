@@ -31,7 +31,6 @@ fun NOT  b1    x y = b1 y x;
   	2 f x = f(f(x)) etc.  *)
 
 fun zero     f x = x;         (*Do not apply successor function*)
-fun succ   n f x = f(n f x);  (*Apply successor function to base n+1 many times*)
 
 (* ----- ARITHMETIC OPERATORS -----
   Arithmetic operations on numbers may be encoded as functions which act on Church numerals. The 
@@ -43,7 +42,14 @@ fun mult m n f x = m (n f) x;  (*Take nth successor of base, m many times*)
 fun pow  m n     = n m;
 
 (* ----- PREDECESSOR FUNCTION -----
-  The predecessor funtion is the inverse of the successor function. It is *)
+  The predecessor funtion is the inverse of the successor function. It is not trivial to derive
+  from the successor function, and may be impossible to derive in closed form for a particular
+  basis (for example if the successor function loses information, e.g. via mod).
+
+  What we need is a way of applying f to x one fewer time than the input value. The following code
+  applies the successor function to a pair of zeroes, n times to the second zero and (n-1) times to
+  the first zero, then returns the first value in the pair.  *)
+
 fun pre n f x = (fn (a,b) => a) (n (fn (a,b) => (b,f b)) (x,x));
 fun sub m n f x = n pre m f x;
 
