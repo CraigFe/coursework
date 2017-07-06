@@ -2,13 +2,31 @@ package uk.ac.cam.cf443.fjava.tick0;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 
+
 public class ExternalSort {
+	
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		RandomAccessFile f = new RandomAccessFile("src/uk/ac/cam/cf443/fjava/tick0/example","rw");
+		DataOutputStream d = new DataOutputStream(
+		    new BufferedOutputStream(new FileOutputStream(f.getFD())));
+		d.writeInt(1); //write calls now only store primitive ints in memory
+		d.writeInt(2);
+		d.writeInt(3);
+		d.flush(); //force the contents to be written to the disk. Important!
+		f.seek(4);
+		System.out.println("Read four bytes as an int value "+f.readInt());
+		System.out.println("The file is "+f.length()+" bytes long");
+	}
 
 	public static void sort(String filenameA, String filenameB) 
 			throws FileNotFoundException, IOException {
@@ -36,13 +54,12 @@ public class ExternalSort {
 				computed += byteToHex(v);
 
 			return computed;
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			
+		} 
+		catch (NoSuchAlgorithmException e) {e.printStackTrace();} 
+		catch (FileNotFoundException e)    {e.printStackTrace();} 
+		catch (IOException e) 			   {e.printStackTrace();}
+		
 		return "<error computing checksum>";
 	}
 }
