@@ -14,9 +14,13 @@ import java.security.NoSuchAlgorithmException;
 public class ExternalSortTest {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		for(int i = 1; i <= 16; i++) {
+		long startTime = System.nanoTime();
+		for(int i = 1; i <= 17; i++) {
 			test(i);
 		}
+		System.out.println("----------------------------------------------------------------------");
+		System.out.println("TOTAL TIME");
+		System.out.println((System.nanoTime()-startTime)/1000/1000.00+"ms.");
 	}
 	
 	private static void test(int n) throws FileNotFoundException, IOException {
@@ -78,7 +82,7 @@ public class ExternalSortTest {
 		catch (NoSuchAlgorithmException e) {e.printStackTrace();} 
 		catch (FileNotFoundException e)    {e.printStackTrace();} 
 		catch (IOException e) 			   {e.printStackTrace();}
-		
+
 		return "<error computing checksum>";
 	}
 	
