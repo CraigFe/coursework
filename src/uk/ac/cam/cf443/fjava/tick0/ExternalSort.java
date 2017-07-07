@@ -23,7 +23,7 @@ import static java.nio.file.StandardCopyOption.*;
 public class ExternalSort {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		for(int i = 1; i <= 6; i++) test(i);
+		for(int i = 1; i <= 16; i++) test(i);
 	}
 	
 	private static void test(int n) throws FileNotFoundException, IOException {
@@ -75,42 +75,45 @@ public class ExternalSort {
 				new BufferedInputStream(
 						new FileInputStream(
 								a1.getFD())));
-		
-		DataOutputStream output = new DataOutputStream(
-				new BufferedOutputStream(
-						new FileOutputStream(
-								a1.getFD())));
-
-		a1.seek(0);
+	
 		long mem = Runtime.getRuntime().freeMemory();
-		long req = a1.length();
+		long fileSize = a1.length(); //Size of the input file in bytes
 		
-		System.out.println("Available memory:" + mem);
+		System.out.println("Available memory: " + mem);
 		System.out.println("FileA: "+a1.length()+" bytes");
 		System.out.println("FileB: "+b1.length()+" bytes");
 			
 		//Sort the file in memory
-		if (mem > 1.2 * a1.length()) {
+		if (mem > 2 * a1.length()) {
 			System.out.println("File fits in memory");
 			
-			int num = (int) (req/4);
+			int num = (int) (fileSize/4);
 			
 			ArrayList<Integer> buffer = new ArrayList<>();
 			for (int i = 0; i < num; i++) buffer.add(input.readInt());
 	
 			Collections.sort(buffer);
-			System.out.println(buffer.toString());
-			for (Integer i: buffer) output.writeInt(-1);
+			
+			DataOutputStream output = new DataOutputStream(
+					new BufferedOutputStream(
+							new FileOutputStream(filenameA,false)));
+			
+			for (Integer i: buffer) output.writeInt(i);
 			
 			output.flush(); //Force buffered bytes to be written to the stream 
 			
 		} else {
 			System.out.println("File does not fit in memory");
+	
+			long blockSize = (mem-10000)/4; //Number of integers per block
 			
-			/*long blockSize = req;
-			if (mem < req) blockSize = (long) (mem-1000)/2;
+			//Sort all blocks
 			
-			int[] buffer = new int[(int) ((blockSize-1000)/4)];*/
+			
+			//Mergesort on blocks
+			for (; blockSize < fileSize; blockSize*=2) {
+				
+			}
 			
 		}
 		return;
