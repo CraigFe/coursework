@@ -99,7 +99,8 @@ public class ExternalSort {
 			for (Integer i: buffer) output.writeInt(i);
 			
 			output.flush(); //Force buffered bytes to be written to the stream 
-			
+		
+		//Cut the file into blocks, sort them in memory, then run mergesort on the blocks
 		} else {
 			System.out.println("File does not fit in memory");
 	
@@ -133,7 +134,6 @@ public class ExternalSort {
 			//Mergesort on blocks
 			int mergeCount = 0;
 			for (; blockSize < fileSize; blockSize*=2) {
-//				for (int offset = 0; offset < )
 				
 				DataInputStream input1, input2;
 				
@@ -171,11 +171,13 @@ public class ExternalSort {
 					
 				}
 				
+				//for (int offset = 0; offset < )
+				
 				//Seek second reader to correct position
 				input2.skip(blockSize*4);
 				
 				//Mergesort using the three streams
-				merge(input1,input2,output);
+				merge(input1,blockSize,input2,blockSize,output);
 				mergeCount++;
 			}
 			
@@ -187,12 +189,56 @@ public class ExternalSort {
 		return;
 	}
 	
-	private static void merge(DataInputStream input1, DataInputStream input2, DataOutputStream output) 
+	/**
+	 * Takes two input streams and merges them together by writing them in
+	 * non-decreasing order into an output stream
+	 * 
+	 * @param input1		The first input stream
+	 * @param toWrite1		The number of integers to be taken from the first stream
+	 * @param input2		The second input stream
+	 * @param toWrite2		The number of integers to be taken from the second stream
+	 * @param output		The output stream
+	 * 
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private static void merge(DataInputStream input1, long toWrite1, DataInputStream input2, long toWrite2, DataOutputStream output) 
 			throws FileNotFoundException, IOException {
 		
+
+		int l = input1.readInt();
+		int r = input2.readInt();
+		toWrite1--; toWrite2--;
 		
-		int l, r;
 		
+		
+		while (toWrite1 != 0 && toWrite2 != 0) {
+			
+			if (l <= r) {
+				
+				output.writeInt(l);
+				l = input1.readInt();
+				toWrite1--;
+				
+			} else { // r < l
+				
+				output.writeInt(r);
+				r = input2.readInt();
+				toWrite2--;
+				
+			}
+
+		}
+
+		//Write remaining integers from left and right partitions
+		for (; toWrite1 > 0; toWrite1--) {
+			
+			output.writeInt();
+		}
+		for (; toWrite2 > 0; toWrite2--) output.writeInt(l)
+		
+
 		
 		output.flush();
 	}
