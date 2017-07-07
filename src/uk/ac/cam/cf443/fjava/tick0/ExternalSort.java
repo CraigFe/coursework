@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import static java.nio.file.StandardCopyOption.*;
 
-
-
 public class ExternalSort {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
@@ -87,10 +85,10 @@ public class ExternalSort {
 		if (mem > 2 * a1.length()) {
 			System.out.println("File fits in memory");
 			
-			int num = (int) (fileSize/4);
+			int intsToWrite = (int) (fileSize/4);
 			
 			ArrayList<Integer> buffer = new ArrayList<>();
-			for (int i = 0; i < num; i++) buffer.add(input.readInt());
+			for (int i = 0; i < intsToWrite; i++) buffer.add(input.readInt());
 	
 			Collections.sort(buffer);
 			
@@ -105,13 +103,83 @@ public class ExternalSort {
 		} else {
 			System.out.println("File does not fit in memory");
 	
-			long blockSize = (mem-10000)/4; //Number of integers per block
+			long blockSize  = (mem-10000)/4;                           //Number of integers per block
+			int noBlocks    = (int) Math.ceil(fileSize/(4*blockSize)); //Number of blocks necessary
 			
-			//Sort all blocks
+			DataOutputStream output = new DataOutputStream(
+					new BufferedOutputStream(
+							new FileOutputStream(filenameB,false)));
 			
+			//Sort all blocks except the last
+			for (int j = 1; j < noBlocks; j++) {
+				
+				ArrayList<Integer> buffer = new ArrayList<>();
+				for (int i = 0; i < blockSize; i++) buffer.add(input.readInt());
+				Collections.sort(buffer);
+				for (Integer i: buffer) output.writeInt(i);
+				
+			}
+			
+			int intsToRead = (int) (fileSize/4 - (noBlocks-1)*blockSize); //Number of integers in the final block
+			
+			//Sort the last block
+			ArrayList<Integer> buffer = new ArrayList<>();
+			for (int j = 0; j < intsToRead; j++) {
+				buffer.add(input.readInt());
+				Collections.sort(buffer);
+				for (Integer i: buffer) output.writeInt(i);
+			}
 			
 			//Mergesort on blocks
+			int mergeCount = 0;
 			for (; blockSize < fileSize; blockSize*=2) {
+//				for (int offset = 0; offset < )
+				
+				DataInputStream input1, input2;
+				
+				if (mergeCount % 2 == 0) { //Even number of merges => fileB contains data
+					
+					input1 = new DataInputStream(
+							 	new BufferedInputStream(
+							 		new FileInputStream(
+										b1.getFD())));
+					
+					input2 = new DataInputStream(
+							new BufferedInputStream(
+									new FileInputStream(
+											b1.getFD())));
+					
+					output = new DataOutputStream(
+							new BufferedOutputStream(
+									new FileOutputStream(filenameA,false)));
+					
+				} else { //Odd number of merges => fileA contains data
+
+					input1 = new DataInputStream(
+							new BufferedInputStream(
+									new FileInputStream(
+											a1.getFD())));
+					
+					input2 = new DataInputStream(
+							new BufferedInputStream(
+									new FileInputStream(
+											a1.getFD())));
+					
+					output = new DataOutputStream(
+							new BufferedOutputStream(
+									new FileOutputStream(filenameB,false)));
+					
+				}
+				
+				//Seek second reader to correct position
+				input2.skip(blockSize*4);
+				
+				//Mergesort using the three streams
+				merge(input1,input2,output);
+				mergeCount++;
+			}
+			
+			if (mergeCount % 2 == 0) { //fileB contains data, copy to fileA for output
 				
 			}
 			
@@ -119,6 +187,15 @@ public class ExternalSort {
 		return;
 	}
 	
+	private static void merge(DataInputStream input1, DataInputStream input2, DataOutputStream output) 
+			throws FileNotFoundException, IOException {
+		
+		
+		int l, r;
+		
+		
+		output.flush();
+	}
 	
 	private static String checkSum(String filename) {
 
