@@ -26,7 +26,6 @@ end;
 fun reduce (Integer n, s) = NONE
   | reduce (Boolean b, s) = NONE
   | reduce (Op (e1, opr, e2), s) = (
-
     case (e1, opr, e2) of
         (Integer n1, Plus, Integer n2) => SOME(Integer (n1 + n2), s)  (* op+  *)
       | (Integer n1, GTEQ, Integer n2) => SOME(Boolean (n1 >= n2), s) (* op>= *)
@@ -42,7 +41,6 @@ fun reduce (Integer n, s) = NONE
     )
 
   | reduce (If (e1, e2, e3), s) = (
-
     case e1 of
         Boolean true =>  SOME (e2, s)                 (* if1 *)
       | Boolean false => SOME (e3, s)                 (* if2 *)
@@ -52,14 +50,12 @@ fun reduce (Integer n, s) = NONE
     )
 
   | reduce (Deref l, s) = (
-
     case lookup (s, l) of
         SOME v => SOME(Integer v, s) (* deref *)
       | NONE => NONE
     )
 
   | reduce (Assign (l, e), s) = (
-
     case e of
         Integer v' => (
           case update (s, (l, v')) of
@@ -67,10 +63,21 @@ fun reduce (Integer n, s) = NONE
             | NONE => NONE
         )
       | _ => (
-          case reduce (e, s) of
-              SOME (e', s') => SOME(Assign (l, e'), s') (* assign2 *)
-            | NONE => NONE
+        case reduce (e, s) of
+            SOME (e', s') => SOME(Assign (l, e'), s') (* assign2 *)
+          | NONE => NONE
         )
     )
 
-  | reduce (While (e1, e2), s) = SOME (If ())
+  | reduce (While (e1, e2), s) = SOME (If (e1, Seq (e2, While (e1, e2)), Skip), s) (* while *)
+  | reduce (Seq (e1, e2), s) = (
+    case e1 of
+        Skip => SOME(e2, s)                           (* seq1 *)
+      | _ => (
+        case reduce (e1, s) of
+            SOME (e1', s') => SOME(Seq (e1', e2), s') (* seq2 *)
+          | NONE => NONE
+        )
+    )
+
+  | reduce (Skip, s) = NONE;
