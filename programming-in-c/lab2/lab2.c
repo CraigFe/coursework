@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "revwords.h"
 
-static char strings[][80] = {
+static char strings[8][80] = {
   "University",
   "University of Cambridge",
   "Hello, world",
