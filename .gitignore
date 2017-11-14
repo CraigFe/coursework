@@ -1,1 +1,5 @@
 /bin/
+.idea
+*.iml
+programming-in-c/cmake-build-debug
+programming-in-c/memory-allocator/cmake-build-debug
