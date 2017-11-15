@@ -23,16 +23,10 @@ void add_node(bin_t *bin, node_t *node) {
     node_t *current = bin->head;
     node_t *previous = NULL;
 
-    printf("Current: %p", (void *) current);
-    printf("Current size: %d", current->size);
-
     while (current != NULL && current->size <= node->size) {
         previous = current;
         current = current->next;
     }
-
-    printf("Current value: %p\n", (void *) current);
-    printf("Previous value: %p\n", (void *) previous);
 
     if (current == NULL) { // End of list
         previous->next = node;
