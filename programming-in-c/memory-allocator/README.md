@@ -1,13 +1,14 @@
 # C Memory Allocator
-This project is intended to illustrate a very simple implementation of the dynamic memory allocation functions provided by `stdlib.h`.
+This project is intended to illustrate a very simple implementation of the dynamic memory allocation functions provided by `stdlib.h`. The source files are as follows:
+  * __allocator.c__ : The main code for the allocator implementation. Provides the functions `mem_init`, `mem_alloc` and `mem_free` for using the allocator.
+  * __kernel.c__: The allocator assumes that block allocation (of some size) is provided by. This is achieved with the standard `malloc` and `free` from `stdlib.h`.
+  * __linkedlist.c__: An implementation of a doubly-linked list, used to connect memory blocks of similar sizes together.
+  * __testing.c__: A few basic test methods, showing the basic functionality of the allocator.
 
 ## Design Explanation
 This memory allocator stores objects in a memory, with comparably sized nodes held in doubly-linked lists (_bins_), such that they can be found quickly when attempting to allocate memory. Each allocatable block of memory is stored as a node in a heap. Each node structure contains the allocated memory between a header (`node_t struct`) and a footer (`foot_t` struct). The header contains the size of the block of memory, as well as `next` and `prev` pointers for the linked list. The footer contains a link to the header, so a node can be _coalesced_ with the node immediately to its left if both are unallocated.
 
 The heap requires only a minimal amount of metadata: an array of pointers to the heads of each of the bins. In this implementation, I have chosen to keep each bin in sorted order, so that the best fitting node can be found easily. This improves utilisation of the heap and reduces the rate at which fragmentation, at the cost of additional time complexity in allocating memory on the heap. Each bin contains nodes which are within some
-
-
-Each memory item is stored in a node structure on the heap. The node contains a header and a footer, This particular implementation uses an array of doubly linked lists arranged by their size.
 
 #### Initialisation:
 The heap is initialised by providing a 
