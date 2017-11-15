@@ -113,6 +113,10 @@ void mem_free(void *ptr) {
       node = prev; // The new head of the node is now the at the 'previous' node
     }
 
+    // TODO: Cascade the coelescing of nodes, potentially until the entire block
+    //       provided by the kernel is a single, free chunk. If so, we can
+    //       deallocate it using mem_block_free
+
     // Put this chunk in the appropriate bin
     node->used = FALSE;
     add_node(heap->bins[get_bin_index(node->size)], node);
