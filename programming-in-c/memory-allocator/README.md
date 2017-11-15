@@ -8,7 +8,7 @@ This project is intended to illustrate a very simple implementation of the dynam
 ## Design Explanation
 This memory allocator stores objects in a memory, with comparably-sized nodes held in doubly-linked lists (_bins_), such that they can be found quickly when attempting to allocate memory. Each allocatable block of memory is stored as a node in a heap. Each node structure contains the allocated memory between a header (`node_t struct`) and a footer (`foot_t` struct). The header contains the size of the block of memory, as well as `next` and `prev` pointers for the linked list. The footer contains a link to the header, so a node can be _coalesced_ with the node immediately to its left if both are unallocated.
 
-The heap requires only a minimal amount of metadata: an array of pointers to the heads of each of the bins. In this implementation, I have chosen to keep each bin in sorted order, so that the best fitting node can be found easily. This improves utilisation of the heap and reduces the rate at which fragmentation occurs, at the cost of additional time complexity in allocating memory on the heap. Each bin contains nodes with some value of `ceil(log_2(size))`; that is, one bin for 5-8 byte nodes, one for 9-16 byte notes etc. A better implementation would allocate the threshold sizes for the bins more intelligently to account for typical distributions of node sizes requested by programs.
+The heap requires only a minimal amount of metadata: an array of pointers to the heads of each of the bins. In this implementation, I have chosen to keep each bin in sorted order, so that the best fitting node can be found easily. This improves utilisation of the heap and reduces the rate at which fragmentation occurs, at the cost of additional time complexity in allocating memory on the heap. Each bin contains nodes with some value of `ceil(log_2(size))`; that is, one bin for 5-8 byte nodes, one for 9-16 byte nodes etc. A better implementation would allocate the threshold sizes for the bins more intelligently to account for typical distributions of node sizes requested by programs.
 
 #### Initialisation (`mem_init`):
 The heap is initialised to have a single, contiguous block of allocatable memory which is stored in one of the bins. First, the heap metadata must be created. Then, the initial node is constructed and added to one of the bins in memory.
@@ -23,20 +23,20 @@ The function `mem_free()` takes a pointer to a block allocated by `mem_alloc()`.
 
 It is possible that the nodes immediately to the left and the right of the newly freed block are also free. We can then coalesce these blocks into one larger block, reducing the fragmentation in the heap. The `node_t struct` of the block on the right can be found by adding the size of the freed node to its head pointer; the header of the block on the left can be found by following the pointer stored in its footer (stored immediately to the left of the freed node).
 
+
 ## Questions
 
-**a)** What is the time complexity of `mem_alloc()` and `mem_free()`? How could this be reduced?
-`mem_alloc` is performed in 
+**a) What is the time complexity of `mem_alloc()` and `mem_free()`? How could this be reduced?**
 
-The dominating time cost in the implementation of `mem_alloc()` is in realllo. The current implementation keeps each bin in sorted order, so that the best fitting node can be found easily. This . If the n
+The dominating time cost in the implementation of `mem_alloc()` is in finding a free node of sufficient size from the bins. The current implementation guarantees that the node which is returned is the smallest free node with sufficient size; requiring a traversal of the linked list. The time complexity is therefore `O(b)`, where `b` is the number of unused blocks on the heap with size in the range `(2^floor(log(n)), 2^ceil(log(n))]`.
 
+This could be reduced by relaxing the constraint that the best-fitting node be allocated each time. Instead, the first node from the next bin could be taken immediately, since it must have sufficient size, and then partitioned to return a chunk of the appropriate size. This would result in a build-up of small, unused blocks, which would have to be coalesced into larger blocks at some point. However, since this takes constant time per node, this technique could still be used to achieve amortized O(1) allocation time. 
 
+`mem_free()` also has O(b) time complexity in the number of free blocks. has O(1) time complexity. As the performance is simply in terms of th
 
-`mem_free()` has O(1) time complexity. As the performance is simply in terms of th
+**b) How well does the memory allocator handle fragmentation after a long sequence of calls to `mem_alloc` and `mem_free`? What could be done to improve this?**
 
-
-**b)** How well does the memory allocator handle fragmentation after a long sequence of calls to `mem_alloc` and `mem_free`? What could be done to improve this?
-
+The desicion to coalesce adjacent free nodes into larger nodes provides some resilience against fragmentation of the heap. This technique restricts the number of blocks in the heap to be at most slightly over twice the number of _used_ blocks in the heap. However, it is obviously still possible that a call to `mem_alloc` would fail even though the total amount of free space in the heap is sufficient to allocate a block.
 
 
 **c)** How well does the allocator support the principle of locality? What improvements could be made?
@@ -48,7 +48,7 @@ The dominating time cost in the implementation of `mem_alloc()` is in realllo. T
 A `mem_realloc()` function would be useful in cases where the sizes of structures stored on the heap vary in size dynamically according to execution of the program (for instance, in the case of an array implementation of a min-heap).
 
 This function could be added to this implementation very simply, by writing the following logic:
-  1. If the region of memory is to be contracted, simply partition the node 
+  1. If the region of memory is to be contracted, simply partition the node as in `mem_alloc`.
   2. If the region of memory is to be expanded, and the .
   3. Otherwise, the
 
