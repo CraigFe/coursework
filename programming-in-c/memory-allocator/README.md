@@ -40,7 +40,7 @@ The decision to coalesce adjacent free nodes into larger nodes provides some res
 
 **c) How well does the allocator support the principle of locality? What improvements could be made?**
 
-The allocator does not currently make any considerations of the principle of locality. As described in [Y. Feng, E. Berger. 2005](https://), many standard memory allocator implementations (including [DLmalloc](http://g.oswego.edu/dl/html/malloc.html)) have relatively poor support for caching, because the metadata about each allocated chunk is stored next to the allocated memory itself. The metadata is accessed only by the allocator, and the data is accessed only by the application. In other words, the metadata and the data have different access patterns, potentially lowering cache line utilisation. This is particularly an issue when the application allocates many small chunks of memory, since the proportion of each cacheline which is unusable by the application may be very substantial (> 90%).
+The allocator does not currently make any considerations of the principle of locality. As described in [[Y. Feng, E. Berger. 2005]](https://), many standard memory allocator implementations (including [DLmalloc](http://g.oswego.edu/dl/html/malloc.html)) have relatively poor support for caching, because the metadata about each allocated chunk is stored next to the allocated memory itself. The metadata is accessed only by the allocator, and the data is accessed only by the application. In other words, the metadata and the data have different access patterns, potentially lowering cache line utilisation. This is particularly an issue when the application allocates many small chunks of memory, since the proportion of each cacheline which is unusable by the application may be very substantial (> 90%).
 
 The allocation method could be improved by storing the metadata about each of the nodes in a separate region of memory, within their own data structure. This necessitates the inclusion of additional pointers to map to and from this auxiliary data structure; however, it does ensure that the data for the allocator and the application are stored in physically distinct regions of memory.
 
@@ -57,4 +57,4 @@ This function could be added to this implementation very simply, by writing the 
 
 ## Acknowledgements
 
-The data model behind this implementation is inspired by CCareaga's ['SCHMALL' memory allocator](https://github.com/CCareaga/heap_allocator).
+The general structure of this implementation is inspired by CCareaga's ['SCHMALL' memory allocator](https://github.com/CCareaga/heap_allocator).
