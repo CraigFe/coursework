@@ -6,11 +6,13 @@
 #include <assert.h>
 #include <stdbool.h>
 
-#define INIT_SIZE 0x100
-#define BIN_COUNT 9
+#define INIT_SIZE 0x100  // The initial size of the heap
+#define BIN_COUNT 9      // The number of bins to use in the heap
+#define MIN_ALLOC_SIZE 1 // The minimum size of allocatable memory
 
 typedef unsigned int uint;
 
+// The header of an allocated memory block
 typedef struct node_t {
   bool used;
   uint size;
@@ -18,17 +20,18 @@ typedef struct node_t {
   struct node_t* prev;
 } node_t;
 
+// The footer of an allocated memory block
+typedef struct {
+  node_t* head; // pointer to the header
+} foot_t;
+
+// Pointer to a doubly-linked list of nodes
 typedef struct {
   node_t* head;
 } bin_t;
 
+// The heap metadata: pointers to all of the bins
 typedef struct {
-  node_t* head;
-} foot_t;
-
-typedef struct {
-  node_t *start;
-  node_t *end;
   bin_t *bins[BIN_COUNT];
 } heap_t;
 
